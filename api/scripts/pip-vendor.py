@@ -1,20 +1,22 @@
+#!/usr/bin/env python3
+
 import argparse
 import os
 import subprocess
 import sys
-from typing import List
+from typing import List, Generator
 
 
-def get_vendored_path(output: str) -> str:
+def get_vendored_paths(output: str) -> Generator[str, None, None]:
     for line in output.split(os.linesep):
         if line.strip().startswith("Saved"):
-            return line.strip().split(" ")[1]
+            yield line.strip().split(" ")[1]
 
 
-def get_package_name(output: str) -> str:
+def get_package_names(output: str) -> Generator[str, None, None]:
     for line in output.split(os.linesep):
         if line.strip().startswith("Successfully downloaded"):
-            return line.strip().split(" ")[2]
+            yield line.strip().split(" ")[2]
 
 
 def update_reqs_txt(path: str, reqs: str):
@@ -25,7 +27,7 @@ def update_reqs_txt(path: str, reqs: str):
 def get_args_parser():
     parser = argparse.ArgumentParser(description="Vendor python packages with pip.")
     parser.add_argument(
-        "package", metavar="PACKAGE", type=str, help="Package to vendor"
+        "packages", metavar="PACKAGES", type=str, nargs="+", help="Packages to vendor"
     )
     parser.add_argument(
         "--vendor_path",
@@ -39,28 +41,39 @@ def get_args_parser():
         help="Path to the requirements.txt to update",
         default="requirements.txt",
     )
+    parser.add_argument(
+        "--no_install",
+        action="store_true",
+        help="Do not install the vendored package(s)",
+    )
     return parser
 
 
-def vendor(pkg: str, vendor_dir: str, reqs: str):
-    print(f"Downloading {pkg} to {vendor_dir}...")
-    output = subprocess.run(
-        ["pip", "download", "--dest", vendor_dir, pkg], capture_output=True
-    ).stdout.decode("utf8")
-    vendored_path = get_vendored_path(output)
-    if not vendored_path:
+def vendor(pkgs: List[str], vendor_dir: str, reqs: str, install: bool):
+    print(f"Downloading {pkgs} to {vendor_dir}...")
+    cmd = ["pip", "download", "--dest", vendor_dir, *pkgs]
+    output = subprocess.run(cmd, capture_output=True).stdout.decode("utf8")
+
+    vendored_paths = get_vendored_paths(output)
+    if not vendored_paths:
         print(output)
         sys.exit(1)
-    package_name = get_package_name(output)
-    if not package_name:
+
+    package_names = get_package_names(output)
+    if not package_names:
         print(output)
         sys.exit(1)
-    print(f"Adding {vendored_path} to {reqs}")
-    update_reqs_txt(vendored_path, reqs)
-    print(f"Vendored {package_name} in {vendored_path} and updated {reqs}")
+
+    for vendored_path, package_name in zip(vendored_paths, package_names):
+        update_reqs_txt(vendored_path, reqs)
+        print(f"Vendored {package_name} in {vendored_path} and updated {reqs}")
+
+    if install:
+        print(f"Installing packages...")
+        subprocess.run(["pip", "install", "-r", reqs])
 
 
 if __name__ == "__main__":
     parser = get_args_parser()
     args = parser.parse_args()
-    vendor(args.package, args.vendor_path, args.requirements_txt)
+    vendor(args.packages, args.vendor_path, args.requirements_txt, not args.no_install)
