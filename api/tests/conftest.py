@@ -1,6 +1,6 @@
 import pytest
 
-from api import create_app
+from api.app import create_app
 from api.config import TestConfig
 from api.extensions import db as _db
 
