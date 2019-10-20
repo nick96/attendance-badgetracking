@@ -30,7 +30,8 @@ class AuthorizationException(Exception):
 
 
 class UserNotFoundException(Exception):
-    def __init__(self, email: str = "", user_id: int = 0):
+    def __init__(self, email: str = "", user_id: int = 0, status_code=404):
+        self.status_code = status_code
         if user_id > 0:
             super().__init__(f"Not user with ID {user_id} was found")
         else:
@@ -64,7 +65,7 @@ def role_exists_exception_handler(app, error):
 
 def user_not_found_exception_handler(app, error):
     app.logger.warning(f"Could not find user: {str(error)}")
-    return {"message": "User not found", "error": str(error)}, 404
+    return {"message": "User not found", "error": str(error)}, error.status_code
 
 
 def role_not_found_exception_handler(app, error):
