@@ -10,17 +10,24 @@ from api.exceptions import (
     RoleExistsException,
     RoleNotFoundException,
     AuthorizationException,
+    UserNotFoundException,
 )
 from api.extensions import db
 from api.models import User, Role
 
 
 def get_user_by_id(user_id: int) -> User:
-    return User.query.filter_by(id=user_id).first()
+    user = User.query.filter_by(id=user_id).first()
+    if not user:
+        raise UserNotFoundException(user_id=user_id)
+    return user
 
 
 def get_user_by_email(email: str) -> User:
-    return User.query.filter_by(email=email).first()
+    user = User.query.filter_by(email=email).first()
+    if not user:
+        raise UserNotFoundException(email=email)
+    return user
 
 
 def add_user(
@@ -74,8 +81,9 @@ def update_user(
 def delete_user(deleting_user: User, delete_user_id: int) -> User:
     if not deleting_user.is_admin() and deleting_user.id != delete_user_id:
         raise AuthorizationException(f"User cannot delete user {delete_user_id}")
-    deleted_user = User.query.filter_by(id=delete_user_id).first()
-    User.query.filter_by(id=delete_user_id).delete()
+    deleted_user = get_user_by_id(delete_user_id)
+    db.session.delete(deleted_user)
+    db.session.commit()
     return deleted_user
 
 

@@ -21,11 +21,13 @@ class Config:
     JWT_ALGOS = ["HS256"]
     JWT_SECRET = os.environ.get("JWT_SECRET", "secret")
 
+    LOG_LEVEL = os.environ.get("LOG_LEVEL", "DEBUG")
+
 
 class ProdConfig(Config):
     ENV = "prod"
     DEBUG = False
-    SQLALCHEMY_DATABASE_URI = os.environ.get("DATABASE_URI")
+    SQLALCHEMY_DATABASE_URI = os.environ["DB_URI"]
 
 
 class DevConfig(Config):

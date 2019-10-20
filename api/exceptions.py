@@ -1,5 +1,4 @@
-from marshmallow import ValidationError
-from flask import request, current_app
+from flask import request
 
 
 class UserExistsException(Exception):
@@ -61,3 +60,13 @@ def user_exists_exception_handler(app, error):
 def role_exists_exception_handler(app, error):
     app.logger.warning(f"User already exists: {str(error)}")
     return {"message": "Role already exists", "error": str(error)}, 400
+
+
+def user_not_found_exception_handler(app, error):
+    app.logger.warning(f"Could not find user: {str(error)}")
+    return {"message": "User not found", "error": str(error)}, 404
+
+
+def role_not_found_exception_handler(app, error):
+    app.logger.warning(f"Could not find role: {str(error)}")
+    return {"message": "Role not found", "error": str(error)}, 404

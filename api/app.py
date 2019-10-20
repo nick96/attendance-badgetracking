@@ -1,16 +1,10 @@
-import datetime
-import os
 from functools import partial
 
-import click
-from flask import Flask, current_app, Response
-from flask.cli import with_appcontext
+from flask import Flask
 from marshmallow import ValidationError
-from werkzeug.exceptions import NotFound, MethodNotAllowed
 
 from api import blueprints
-from api.blueprints import create_user
-from api.config import ProdConfig, TestConfig, DevConfig, config
+from api.config import config
 from api.exceptions import (
     validation_error_handler,
     AuthenticationException,
@@ -21,9 +15,12 @@ from api.exceptions import (
     RoleExistsException,
     role_exists_exception_handler,
     user_exists_exception_handler,
+    user_not_found_exception_handler,
+    role_not_found_exception_handler,
+    UserNotFoundException,
+    RoleNotFoundException,
 )
 from api.extensions import db, migrate
-from api.models import User
 from api.service import add_user, add_role
 
 
@@ -41,6 +38,7 @@ def create_app(config_obj=config()):
 
     # Config
     app.config.from_object(config_obj)
+    app.logger.setLevel(app.config.get("LOG_LEVEL"))
 
     # Database
     db.init_app(app)
@@ -56,6 +54,12 @@ def create_app(config_obj=config()):
     app.errorhandler(AuthorizationException)(partial(authz_exception_handler, app))
     app.errorhandler(UserExistsException)(partial(user_exists_exception_handler, app))
     app.errorhandler(RoleExistsException)(partial(role_exists_exception_handler, app))
+    app.errorhandler(UserNotFoundException)(
+        partial(user_not_found_exception_handler, app)
+    )
+    app.errorhandler(RoleNotFoundException)(
+        partial(role_not_found_exception_handler, app)
+    )
 
     # Initialisation
     app.before_first_request(initial_data(app))

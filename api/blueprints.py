@@ -1,15 +1,11 @@
+from flask import Blueprint
 from flask import request, g, current_app
 from passlib.hash import argon2
 
 from api import service
 from api.decorators import requires_authn, requires_authz
-from api.exceptions import (
-    UserExistsException,
-    AuthorizationException,
-    AuthenticationException,
-)
+from api.exceptions import AuthorizationException, AuthenticationException
 from api.schemas import UserRequestSchema, UserResponseSchema, LoginRequestSchema
-from flask import Blueprint
 
 user_blueprint = Blueprint("user", __name__)
 auth_blueprint = Blueprint("auth", __name__)
@@ -32,7 +28,8 @@ def get_user_by_id(user_id: int):
         raise AuthorizationException(
             f"User {g.user.email} does not have sufficient authorisation"
         )
-    found_user = service.get_user_by_id(g.user.id)
+    found_user = service.get_user_by_id(user_id)
+    current_app.logger.info(f"Found user {found_user}")
     return UserResponseSchema().dump(found_user)
 
 
@@ -47,6 +44,7 @@ def create_user():
             f"User with email {req['email']} was not found, even though they were just created"
         )
         return 500
+    current_app.logger.info(f"Created user {created_user}")
     return UserResponseSchema().dump(created_user), 201
 
 
@@ -57,6 +55,7 @@ def update_user(user_id: int):
     updated_user = service.update_user(
         updating_user=g.user, update_user_id=user_id, **req
     )
+    current_app.logger.info(f"Updated user {updated_user}")
     return UserResponseSchema().dump(updated_user)
 
 
@@ -64,6 +63,7 @@ def update_user(user_id: int):
 @requires_authn()
 def delete_user(user_id: int):
     deleted_user = service.delete_user(deleting_user=g.user, delete_user_id=user_id)
+    current_app.logger.info(f"Deleted user {deleted_user}")
     return UserResponseSchema().dump(deleted_user)
 
 
@@ -80,4 +80,5 @@ def login():
         current_app.logger.info(f"User {user.id}'s password is incorrect")
         raise AuthenticationException("Email or password incorrect")
 
+    current_app.logger.info(f"Creating token for user {user}")
     return {"token": service.new_jwt(user)}
