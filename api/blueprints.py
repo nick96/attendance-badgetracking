@@ -4,7 +4,11 @@ from passlib.hash import argon2
 
 from api import service
 from api.decorators import requires_authn, requires_authz
-from api.exceptions import AuthorizationException, AuthenticationException
+from api.exceptions import (
+    AuthorizationException,
+    AuthenticationException,
+    UserNotFoundException,
+)
 from api.schemas import UserRequestSchema, UserResponseSchema, LoginRequestSchema
 
 user_blueprint = Blueprint("user", __name__)
@@ -71,7 +75,11 @@ def delete_user(user_id: int):
 def login():
     """Exchange credentials for a JWT."""
     req = LoginRequestSchema().loads(request.get_data())
-    user = service.get_user_by_email(req["email"])
+    try:
+        user = service.get_user_by_email(req["email"])
+    except UserNotFoundException as err:
+        err.status_code = 403
+        raise err
     if not user:
         current_app.logger.info(f"Could not find user with email {req['email']}")
         raise AuthenticationException("Email or password incorrect")
