@@ -27,7 +27,7 @@ class Config:
 class ProdConfig(Config):
     ENV = "prod"
     DEBUG = False
-    SQLALCHEMY_DATABASE_URI = os.environ["DB_URI"]
+    SQLALCHEMY_DATABASE_URI = os.environ.get("DB_URI")
 
 
 class DevConfig(Config):
