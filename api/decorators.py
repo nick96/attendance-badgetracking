@@ -2,13 +2,13 @@ from functools import wraps
 from typing import List
 
 import jwt
-from flask import request, g, current_app
+from flask import request, g, current_app, Request
 
 from api.exceptions import AuthenticationException, AuthorizationException
 from api.service import get_user_by_email, validate_jwt
 
 
-def check_authz_header():
+def check_authn(request: Request):
     authn = request.headers.get("Authorization")
     if not authn:
         raise AuthenticationException(
@@ -31,6 +31,19 @@ def check_authz_header():
     g.user = user
 
 
+def check_authz(request: Request, roles: List[str]):
+    check_authn(request)
+    user = get_user_by_email(g.user.email)
+    if not user:
+        raise AuthorizationException(f"No user with email {g.user.email} exists")
+
+    for role in roles:
+        if not user.has_role(role):
+            raise AuthorizationException(
+                f"User {g.user.email} does not have sufficient authorisation"
+            )
+
+
 def requires_authn():
     """Decorator to assert a user is authenticated.
 
@@ -41,7 +54,7 @@ def requires_authn():
     def wrapper(fn):
         @wraps(fn)
         def decorator(*args, **kwargs):
-            check_authz_header()
+            check_authn(request)
             return fn(*args, **kwargs)
 
         return decorator
@@ -58,19 +71,7 @@ def requires_authz(roles: List[str]):
     def wrapper(fn):
         @wraps(fn)
         def decorator(*args, **kwargs):
-            check_authz_header()
-            user = get_user_by_email(g.user.email)
-            if not user:
-                raise AuthorizationException(
-                    f"No user with email {g.user.email} exists"
-                )
-
-            for role in roles:
-                if not user.has_role(role):
-                    raise AuthorizationException(
-                        f"User {g.user.email} does not have sufficient authorisation"
-                    )
-
+            check_authz(request, roles)
             return fn(*args, **kwargs)
 
         return decorator
