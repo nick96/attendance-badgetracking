@@ -33,9 +33,9 @@ class UserNotFoundException(Exception):
     def __init__(self, email: str = "", user_id: int = 0, status_code=404):
         self.status_code = status_code
         if user_id > 0:
-            super().__init__(f"Not user with ID {user_id} was found")
+            super().__init__(f"No user with ID {user_id} was found")
         else:
-            super().__init__(f"Not user with email {email} was found")
+            super().__init__(f"No user with email {email} was found")
 
 
 def validation_error_handler(app, error):
