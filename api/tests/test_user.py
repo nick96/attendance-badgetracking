@@ -36,11 +36,10 @@ class TestUser:
         register_other_resp = register_user(client, email="example2@example.com")
         login_resp = login_user(client, email="example2@example.com")
         resp = client.get(
-            url_for("user.get_user_by_id", user_id=register_other_resp.json["id"]),
+            url_for("user.get_user_by_id", user_id=register_resp.json["id"]),
             headers={"Authorization": f"Bearer {login_resp.json['token']}"},
         )
-        assert resp.status_code == 200
-        UserResponseSchema().loads(resp.data)
+        assert resp.status_code == 401
 
     def test_update_user_self(self, db, client):
         register_resp = register_user(client)
