@@ -28,7 +28,8 @@ jobs:
 
       - save_cache:
           paths:
-            - ./venv
+            - /usr/local/bin
+            - /usr/local/lib/python3.7/site-packages
           key: v1-dependencies-{{ checksum "api/requirements.txt" }}-{{ checksum "api/requirements-dev.txt" }}
 
       - run:
