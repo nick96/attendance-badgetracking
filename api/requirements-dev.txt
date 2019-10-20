@@ -2,3 +2,5 @@ pytest
 docker
 requests
 pytest-cov
+pytest-pep8
+coverage
