@@ -1,0 +1,44 @@
+# Python CircleCI 2.0 configuration file
+#
+# Check https://circleci.com/docs/2.0/language-python/ for more details
+#
+version: 2.1
+orbs:
+  codecov: codecov/codecov@1.0.2
+jobs:
+  build:
+    docker:
+      - image: circleci/python:3.7
+    working_directory: ~/repo
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "requirements.txt" }}-{{ checksum "requirements-dev.txt" }}
+            - v1-dependencies
+
+      - run:
+          name: install dependencies
+          command: pip install --user -r requirements.txt
+          working_directory: api
+      - run:
+          name: install dev dependencies
+          command: pip install --user -r requirements-dev.txt
+          working_directory: api
+
+      - save_cache:
+          paths:
+            - ./venv
+          key: v1-dependencies-{{ checksum "requirements.txt" }}-{{ checksum "requirements-dev.txt" }}
+
+      - run:
+          name: run unit tests
+          command: pytest --cov=. --cov-branch --cov-report=xml tests
+          working_directory: api
+
+      - store_artifacts:
+          path: ~/repo/api/coverage.xml
+          destination: test-coverage
+
+      - codecov/upload:
+          file: ~/repo/api/coverage.xml
