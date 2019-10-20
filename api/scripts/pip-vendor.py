@@ -7,16 +7,22 @@ import sys
 from typing import List, Generator
 
 
-def get_vendored_paths(output: str) -> Generator[str, None, None]:
+def get_vendored_paths(output: str) -> List[str]:
+    paths = []
     for line in output.split(os.linesep):
         if line.strip().startswith("Saved"):
-            yield line.strip().split(" ")[1]
+            vendored_path = line.strip().split(" ")[1]
+            paths.append(vendored_path)
+    return paths
 
 
-def get_package_names(output: str) -> Generator[str, None, None]:
+def get_package_names(output: str) -> List[str]:
+    names = []
     for line in output.split(os.linesep):
-        if line.strip().startswith("Successfully downloaded"):
-            yield line.strip().split(" ")[2]
+        if line.strip().startswith("Collecting"):
+            package_name = line.strip().split(" ")[1]
+            names.append(package_name)
+    return names
 
 
 def update_reqs_txt(path: str, reqs: str):
