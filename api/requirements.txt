@@ -13,3 +13,17 @@
 ./vendor/pytest-5.2.1-py3-none-any.whl
 
 ./vendor/Flask_Migrate-2.5.2-py2.py3-none-any.whl
+
+./vendor/gunicorn-19.9.0-py2.py3-none-any.whl
+
+./vendor/psycopg2-2.8.3.tar.gz
+
+./vendor/requests-2.22.0-py2.py3-none-any.whl
+
+./vendor/idna-2.8-py2.py3-none-any.whl
+
+./vendor/certifi-2019.9.11-py2.py3-none-any.whl
+
+./vendor/chardet-3.0.4-py2.py3-none-any.whl
+
+./vendor/urllib3-1.25.6-py2.py3-none-any.whl
