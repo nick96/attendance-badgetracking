@@ -1,7 +1,13 @@
+import datetime
+
+import flask
 import jwt
+import pytest
 from passlib.hash import argon2
 from flask import url_for
 
+from api.decorators import check_authn
+from api.exceptions import AuthenticationException, UserNotFoundException
 from api.models import User
 from api.schemas import UserResponseSchema
 from api.tests.utils import register_user
@@ -55,3 +61,57 @@ class TestAuthn:
         )
         assert resp.status_code == 403
         assert "token" not in resp.json
+
+    @pytest.mark.xfail()
+    def test_check_authn_no_header(self, mocker, app):
+        mock_request = mocker.patch.object(flask, "request")
+        mock_request.headers.get.return_value = dict()
+        with pytest.raises(
+            AuthenticationException,
+            match="Request does not contain an 'Authorization' header",
+        ), app.app_context():
+            assert check_authn(mock_request)
+
+    def test_check_authn_invalid_jwt(self, mocker, app):
+        mock_request = mocker.patch.object(flask, "request")
+        mock_request.headers.get.return_value = "Bearer token"
+        with pytest.raises(
+            AuthenticationException, match="Could not decode token: .*"
+        ), app.app_context():
+            assert check_authn(mock_request)
+
+    def test_check_authn_no_exist(self, mocker, app):
+        mock_request = mocker.patch.object(flask, "request")
+        token = jwt.encode(
+            {
+                "exp": datetime.datetime.utcnow()
+                + datetime.timedelta(seconds=app.config["JWT_EXP_SEC"]),
+                "sub": "no_exist@example.com",
+                "fnm": "first_name",
+                "lnm": "last_name",
+            },
+            app.config["JWT_SECRET"],
+        ).decode("utf8")
+        mock_request.headers.get.return_value = f"Bearer {token}"
+        with pytest.raises(
+            UserNotFoundException,
+            match="No user with email no_exist@example.com was found",
+        ), app.app_context():
+            assert check_authn(mock_request)
+
+    def test_check_authn_ok(self, client, mocker, app):
+        register_user(client)
+        mock_request = mocker.patch.object(flask, "request")
+        token = jwt.encode(
+            {
+                "exp": datetime.datetime.utcnow()
+                + datetime.timedelta(seconds=app.config["JWT_EXP_SEC"]),
+                "sub": "example@example.com",
+                "fnm": "first_name",
+                "lnm": "last_name",
+            },
+            app.config["JWT_SECRET"],
+        ).decode("utf8")
+        mock_request.headers.get.return_value = f"Bearer {token}"
+        with app.app_context():
+            check_authn(mock_request)
