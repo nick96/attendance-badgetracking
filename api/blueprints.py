@@ -26,7 +26,7 @@ def get_users():
 @requires_authn()
 def get_user_by_id(user_id: int):
     if g.user.id != user_id and not g.user.is_admin():
-        current_app.logger.warn(
+        current_app.logger.warning(
             f"User {g.user.id} tried to access {user_id} but was denied due to not having admin privileges"
         )
         raise AuthorizationException(
