@@ -27,3 +27,5 @@
 ./vendor/chardet-3.0.4-py2.py3-none-any.whl
 
 ./vendor/urllib3-1.25.6-py2.py3-none-any.whl
+
+./vendor/Flask_Cors-3.0.8-py2.py3-none-any.whl
