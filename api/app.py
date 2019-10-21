@@ -2,6 +2,7 @@ from functools import partial
 
 from flask import Flask
 from marshmallow import ValidationError
+from flask_cors import CORS
 
 from api import blueprints
 from api.config import config
@@ -35,6 +36,9 @@ def create_app(config_obj=config()):
     """
     app = Flask(__name__)
     app.response_class.default_mimetype = "application/json"
+
+    # CORS
+    CORS(app)
 
     # Config
     app.config.from_object(config_obj)
