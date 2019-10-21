@@ -17,6 +17,18 @@ class TestUser:
         assert resp.status_code == 200
         UserResponseSchema().loads(resp.data)
 
+    def test_get_user_no_exist(self, app, client):
+        login_resp = login_user(
+            client,
+            email=app.config["ADMIN_EMAIL"],
+            password=app.config["ADMIN_PASSWORD"],
+        )
+        resp = client.get(
+            url_for("user.get_user_by_id", user_id=100),
+            headers={"Authorization": f"Bearer {login_resp.json['token']}"},
+        )
+        assert resp.status_code == 404
+
     def test_get_user_admin(self, app, client):
         register_resp = register_user(client)
         login_resp = login_user(
