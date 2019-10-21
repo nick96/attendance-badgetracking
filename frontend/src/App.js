@@ -15,7 +15,7 @@ export default function App() {
     let apiUrl = "http://localhost:5000"
     return (
         <Router>
-            <div>
+            <div style={{marginTop: "5%"}}>
                 <Switch>
                     <Route path="/register" component={(props) => <Register {...props} apiUrl={apiUrl}/>}/>
                     <Route path="/login" component={(props) => getSession() ? <Redirect to="/"/> : <Login {...props} apiUrl={apiUrl}/>}/>

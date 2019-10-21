@@ -3,10 +3,12 @@ import React, {useState} from "react";
 import {Link, Redirect} from "react-router-dom";
 import {TextField} from 'formik-material-ui'
 
-import {setSession} from "./utils";
+import {getSession, setSession} from "./utils";
 import Button from "@material-ui/core/Button";
+import {useSnackbar} from "notistack";
 
 export function Login(apiUrl) {
+    const { enqueueSnackbar } = useSnackbar()
     const [loggedIn, setLoggedIn] = useState(0)
     return (loggedIn ? <Redirect to="/"/> : <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
         <Formik
@@ -45,6 +47,13 @@ export function Login(apiUrl) {
                             console.log(json)
                             setSession(json.token)
                             setLoggedIn(true)
+                            enqueueSnackbar("Logged in successfully",  {
+                                    variant: 'success',
+                                    anchorOrigin: {
+                                        vertical: 'top',
+                                        horizontal: 'center',
+                                    }
+                                })
                         })
                         .catch(resp => {
                             console.error(resp.statusText)
