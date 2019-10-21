@@ -1,26 +1,28 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+import {
+    BrowserRouter as Router,
+    Switch,
+    Route
+} from "react-router-dom";
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+import {getSession, PrivateRoute} from "./utils"
+import {Login} from "./login"
+import {Home} from "./home";
+import {Register} from "./register";
+import Redirect from "react-router-dom/es/Redirect";
+
+export default function App() {
+    let apiUrl = "http://localhost:5000"
+    return (
+        <Router>
+            <div>
+                <Switch>
+                    <Route path="/register" component={(props) => <Register {...props} apiUrl={apiUrl}/>}/>
+                    <Route path="/login" component={(props) => getSession() ? <Redirect to="/"/> : <Login {...props} apiUrl={apiUrl}/>}/>
+                    <PrivateRoute path="/" component={(props) => <Home {...props} apiUrl={apiUrl}/>}/>
+                </Switch>
+            </div>
+        </Router>
+    );
 }
 
-export default App;
