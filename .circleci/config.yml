@@ -43,11 +43,11 @@ jobs:
           working_directory: api
 
       - store_test_results:
-          path: ~/repo/api/coverage.xml
+          path: ~/repo/api/pytest
 
       - store_artifacts:
-          path: ~/repo/api/coverage.xml
-          destination: test-coverage
+          path: ~/repo/api/pytest
+          destination: pytest-coverage
 
       - codecov/upload:
-          file: ~/repo/api/coverage.xml
+          file: ~/repo/api/pytest/coverage.xml
