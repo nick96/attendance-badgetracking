@@ -14,8 +14,7 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-            - v1-dependencies-{{ checksum "api/requirements.txt" }}-{{ checksum "api/requirements-dev.txt" }}
-            - v1-dependencies
+            - v2-dependencies-{{ checksum "api/requirements.txt" }}-{{ checksum "api/requirements-dev.txt" }}
       - run:
           name: setup virtualenv
           command: virtualenv .venv
@@ -33,7 +32,7 @@ jobs:
       - save_cache:
           paths:
             - .venv/lib/python3.7/site-packages
-          key: v1-dependencies-{{ checksum "api/requirements.txt" }}-{{ checksum "api/requirements-dev.txt" }}
+          key: v2-dependencies-{{ checksum "api/requirements.txt" }}-{{ checksum "api/requirements-dev.txt" }}
 
       - run:
           name: run unit tests
