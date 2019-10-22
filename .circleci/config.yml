@@ -22,11 +22,11 @@ jobs:
 
       - run:
           name: install dependencies
-          command: ./.venv/bin/pip install --user -r requirements.txt
+          command: ./.venv/bin/pip install -r requirements.txt
           working_directory: api
       - run:
           name: install dev dependencies
-          command: ./.venv/bin/pip install --user -r requirements-dev.txt
+          command: ./.venv/bin/pip install -r requirements-dev.txt
           working_directory: api
 
       - save_cache:
