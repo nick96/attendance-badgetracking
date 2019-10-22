@@ -17,7 +17,7 @@ class TestAuthn:
     def test_register_user(self, client, db):
         resp = register_user(client)
 
-        assert resp.status_code == 201
+        assert resp.status_code == 201, resp.json["message"]
 
         registered_user = UserResponseSchema().loads(resp.data)
 
@@ -37,7 +37,7 @@ class TestAuthn:
             url_for("auth.login"),
             json={"email": "example@example.com", "password": "password"},
         )
-        assert resp.status_code == 200
+        assert resp.status_code == 200, resp.json["message"]
         assert "token" in resp.json
         assert jwt.decode(
             resp.json["token"],

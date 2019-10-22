@@ -9,20 +9,22 @@ def register_user(
     email: str = "example@example.com",
     password: str = "password",
 ) -> Response:
-    return client.post(
+    resp = client.post(
         url_for("user.create_user"),
         json={
-            "first_name": first_name,
-            "last_name": last_name,
+            "firstName": first_name,
+            "lastName": last_name,
             "email": email,
             "password": password,
         },
     )
+    return resp
 
 
 def login_user(
     client: Client, email: str = "example@example.com", password: str = "password"
 ) -> Response:
-    return client.post(
+    resp = client.post(
         url_for("auth.login"), json={"email": email, "password": password}
     )
+    return resp
