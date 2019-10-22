@@ -39,6 +39,9 @@ jobs:
           command: ./.venv/bin/pytest --cov=. --cov-branch --cov-report=xml tests
           working_directory: api
 
+      - store_test_results:
+          path: ~/repo/api/coverage.xml
+
       - store_artifacts:
           path: ~/repo/api/coverage.xml
           destination: test-coverage
