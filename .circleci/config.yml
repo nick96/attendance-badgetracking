@@ -16,25 +16,28 @@ jobs:
           keys:
             - v1-dependencies-{{ checksum "api/requirements.txt" }}-{{ checksum "api/requirements-dev.txt" }}
             - v1-dependencies
+      - run:
+          name: setup virtualenv
+          command: virtualenv .venv
+          working_directory: api
 
       - run:
           name: install dependencies
-          command: pip install --user -r requirements.txt
+          command: ./.venv/bin/pip install --user -r requirements.txt
           working_directory: api
       - run:
           name: install dev dependencies
-          command: pip install --user -r requirements-dev.txt
+          command: ./.venv/bin/pip install --user -r requirements-dev.txt
           working_directory: api
 
       - save_cache:
           paths:
-            - /usr/local/bin
-            - /usr/local/lib/python3.7/site-packages
+            - .venv/lib/python3.7/site-packages
           key: v1-dependencies-{{ checksum "api/requirements.txt" }}-{{ checksum "api/requirements-dev.txt" }}
 
       - run:
           name: run unit tests
-          command: pytest --cov=. --cov-branch --cov-report=xml tests
+          command: ./.venv/bin/pytest --cov=. --cov-branch --cov-report=xml tests
           working_directory: api
 
       - store_artifacts:
