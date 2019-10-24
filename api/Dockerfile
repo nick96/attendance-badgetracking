@@ -5,12 +5,10 @@ WORKDIR /api
 RUN apt-get update && apt-get install -y postgresql
 
 COPY requirements.txt requirements.txt
-COPY vendor vendor
 RUN pip install -r requirements.txt
 
-COPY migrations migrations
-COPY ./scripts/*.sh ./scripts/
-COPY *.py ./
+COPY src/migrations migrations
+COPY src/*.py ./
 
 COPY ./scripts/boot.sh ./scripts/boot.sh
 COPY scripts/wait-for-postgres.sh ./scripts/wait-for-postgres.sh
