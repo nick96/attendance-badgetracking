@@ -2,7 +2,7 @@ version: "3.7"
 
 services:
   api:
-    image: nick96/attendance-badgetracking-backend:latest
+    image: api:latest
     env_file:
       - .env
     environment:
