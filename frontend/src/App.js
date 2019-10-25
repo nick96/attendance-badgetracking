@@ -1,27 +1,31 @@
 import React from "react";
-import {
-    BrowserRouter as Router,
-    Switch,
-    Route,
-    Redirect
-} from "react-router-dom";
+import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import { Login } from "./login";
+import { Home } from "./home";
+import { Register } from "./register";
+import { Client, ClientContext } from "./Client";
+import { SessionContextProvider } from "./session";
 
-import {getSession, PrivateRoute} from "./utils"
-import {Login} from "./login"
-import {Home} from "./home";
-import {Register} from "./register";
-import {Client} from "./Client";
+const AppRouter = () => (
+  <Router>
+    <Switch>
+      <Route path="/register" component={props => <Register {...props} />} />
+      <Route path="/login" component={props => <Login {...props} />} />
+      <Route path="/" component={props => <Home {...props} />} />
+    </Switch>
+  </Router>
+);
 
 export default function App() {
-    let client = new Client(process.env.REACT_APP_API_URL || "http://localhost:5000")
-    return (
-        <Router>
-                <Switch>
-                    <Route path="/register" component={(props) => <Register {...props} client={client}/>}/>
-                    <Route path="/login" component={(props) => getSession() ? <Redirect to="/"/> : <Login {...props} client={client}/>}/>
-                    <PrivateRoute path="/" component={(props) => <Home {...props} client={client}/>}/>
-                </Switch>
-        </Router>
-    );
-}
+  const client = new Client(
+    process.env.REACT_APP_API_URL || "http://localhost:5000"
+  );
 
+  return (
+    <SessionContextProvider>
+      <ClientContext.Provider value={client}>
+        <AppRouter />
+      </ClientContext.Provider>
+    </SessionContextProvider>
+  );
+}
