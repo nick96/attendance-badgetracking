@@ -34,7 +34,6 @@ function LoginForm({ onSubmit }) {
               margin="normal"
               fullWidth
             />
-            <ErrorMessage name="email" component="div" />
             <br />
             <Field
               type="password"
@@ -45,7 +44,6 @@ function LoginForm({ onSubmit }) {
               margin="normal"
               fullWidth
             />
-            <ErrorMessage name="password" component="div" />
             <br />
             <React.Fragment>
               <Button
