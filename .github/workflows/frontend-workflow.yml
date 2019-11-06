@@ -1,0 +1,19 @@
+name: Test, build and deploy Frontend
+on:
+  push:
+    paths:
+      - "frontend/**"
+
+jobs:
+  build:
+    name: QC, testing and building
+    runs-on: ubuntu-18.04
+    steps:
+      - uses: actions/checkout@v1
+      - name: Build image
+        run: docker build -t "docker.pkg.github.com/nick96/attendance-badgetracking/frontend:${GITHUB_SHA}"
+      - name: Push final image to registry
+        run: |
+          echo ${secrets.DOCKER_REGISTRY_PASS} | docker login --username ${secrets.DOCKER_REGISTRY_USER} --password-stdin
+          docker push docker.pkg.github.com/nick96/attendance-badgetracking/frontend:${GITHUB_SHA}
+          docker push docker.pkg.github.com/nick96/attendance-badgetracking/frontend:latest
