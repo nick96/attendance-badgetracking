@@ -11,12 +11,14 @@ jobs:
       - uses: actions/checkout@v1
       - name: Lint
         run: |
-          docker build --target linter -t linter -f api/Dockerfile api/
+          docker build --target linter -t linter .
           docker run -it linter
+        working-directory: ./badgerer-api
       - name: Unit test
         run: |
-          docker build --target unit_testing -t unit_testing -f api/Dockerfile api/
+          docker build --target unit_testing -t unit_testing .
           docker run -it unit_testing
+        working-directory: ./badgerer-api
       # - name: Integration tests
       #   run: |
       #     docker build --target integration_testing -t integration_testing -f api/Dockerfile api/
