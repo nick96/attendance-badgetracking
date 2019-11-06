@@ -35,7 +35,9 @@ def check_authz(request: Request, roles: List[str]):
     check_authn(request)
     user = get_user_by_email(g.user.email)
     if not user:
-        raise AuthorizationException(f"No user with email {g.user.email} exists")
+        raise AuthorizationException(
+            f"No user with email {g.user.email} exists"
+        )
 
     for role in roles:
         if not user.has_role(role):

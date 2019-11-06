@@ -54,10 +54,18 @@ def create_app(config_obj=config()):
 
     # Error handlers
     app.errorhandler(ValidationError)(partial(validation_error_handler, app))
-    app.errorhandler(AuthenticationException)(partial(authn_exception_handler, app))
-    app.errorhandler(AuthorizationException)(partial(authz_exception_handler, app))
-    app.errorhandler(UserExistsException)(partial(user_exists_exception_handler, app))
-    app.errorhandler(RoleExistsException)(partial(role_exists_exception_handler, app))
+    app.errorhandler(AuthenticationException)(
+        partial(authn_exception_handler, app)
+    )
+    app.errorhandler(AuthorizationException)(
+        partial(authz_exception_handler, app)
+    )
+    app.errorhandler(UserExistsException)(
+        partial(user_exists_exception_handler, app)
+    )
+    app.errorhandler(RoleExistsException)(
+        partial(role_exists_exception_handler, app)
+    )
     app.errorhandler(UserNotFoundException)(
         partial(user_not_found_exception_handler, app)
     )

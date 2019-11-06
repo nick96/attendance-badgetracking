@@ -1,7 +1,6 @@
 from flask import Blueprint
 from flask import request, g, current_app
-from passlib.hash import argon2 #type: ignore
-
+from passlib.hash import argon2  # type: ignore
 from badgerer_api import service
 from badgerer_api.decorators import requires_authn, requires_authz
 from badgerer_api.exceptions import (

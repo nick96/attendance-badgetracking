@@ -7,7 +7,10 @@ from passlib.hash import argon2
 from flask import url_for
 
 from badgerer_api.decorators import check_authn
-from badgerer_api.exceptions import AuthenticationException, UserNotFoundException
+from badgerer_api.exceptions import (
+    AuthenticationException,
+    UserNotFoundException,
+)
 from badgerer_api.models import User
 from badgerer_api.schemas import UserResponseSchema
 
@@ -22,7 +25,9 @@ class TestAuthn:
 
         registered_user = UserResponseSchema().loads(resp.data)
 
-        usr = db.session.query(User).filter_by(id=registered_user["id"]).first()
+        usr = (
+            db.session.query(User).filter_by(id=registered_user["id"]).first()
+        )
         assert usr
         assert argon2.verify("password", usr.password)
 

@@ -46,7 +46,7 @@ class TestUser:
 
     def test_get_user_other(self, client):
         register_resp = register_user(client)
-        register_other_resp = register_user(client, email="example2@example.com")
+        register_user(client, email="example2@example.com")
         login_resp = login_user(client, email="example2@example.com")
         resp = client.get(
             url_for("user.get_user_by_id", user_id=register_resp.json["id"]),
@@ -58,7 +58,11 @@ class TestUser:
         register_resp = register_user(client)
         login_resp = login_user(client)
 
-        user = db.session.query(User).filter_by(id=register_resp.json["id"]).first()
+        user = (
+            db.session.query(User)
+            .filter_by(id=register_resp.json["id"])
+            .first()
+        )
         user.first_name = "updated_first_name"
         req = UserRequestSchema().dump(user)
         req.pop("password")
@@ -79,7 +83,11 @@ class TestUser:
             password=app.config["ADMIN_PASSWORD"],
         )
 
-        user = db.session.query(User).filter_by(id=register_resp.json["id"]).first()
+        user = (
+            db.session.query(User)
+            .filter_by(id=register_resp.json["id"])
+            .first()
+        )
         user.first_name = "updated_first_name"
         req = UserRequestSchema().dump(user)
         req.pop("password")
@@ -99,7 +107,11 @@ class TestUser:
             client, email="example2@example.com", password="password"
         )
 
-        user = db.session.query(User).filter_by(id=register_resp.json["id"]).first()
+        user = (
+            db.session.query(User)
+            .filter_by(id=register_resp.json["id"])
+            .first()
+        )
         user.first_name = "updated_first_name"
         req = UserRequestSchema().dump(user)
         req.pop("password")
@@ -121,7 +133,9 @@ class TestUser:
         assert resp.status_code == 200
         UserResponseSchema().loads(resp.data)
         assert (
-            db.session.query(User).filter_by(id=register_resp.json["id"]).scalar()
+            db.session.query(User)
+            .filter_by(id=register_resp.json["id"])
+            .scalar()
             is None
         )
 
@@ -140,7 +154,9 @@ class TestUser:
         assert resp.status_code == 200
         UserResponseSchema().loads(resp.data)
         assert (
-            db.session.query(User).filter_by(id=register_resp.json["id"]).scalar()
+            db.session.query(User)
+            .filter_by(id=register_resp.json["id"])
+            .scalar()
             is None
         )
 

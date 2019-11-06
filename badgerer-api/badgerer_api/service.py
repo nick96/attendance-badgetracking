@@ -3,7 +3,7 @@ from typing import List, Iterator
 
 import jwt
 from flask import current_app
-from passlib.hash import argon2 #type: ignore
+from passlib.hash import argon2  # type: ignore
 from badgerer_api.exceptions import (
     UserExistsException,
     RoleExistsException,
@@ -61,7 +61,9 @@ def update_user(
     role_names: List[str] = None,
 ) -> User:
     if not updating_user.is_admin() and updating_user.id != update_user_id:
-        raise AuthorizationException(f"User cannot update user {update_user_id}")
+        raise AuthorizationException(
+            f"User cannot update user {update_user_id}"
+        )
 
     if not updating_user.is_admin() and role_names is not None:
         raise AuthorizationException(f"User cannot update their roles")
@@ -73,7 +75,9 @@ def update_user(
     if password:
         user.password = argon2.hash(password)
     if role_names is not None:
-        user.roles = [get_role_by_name(role_name) for role_name in role_names] #type: ignore
+        user.roles = [
+            get_role_by_name(role_name) for role_name in role_names
+        ]  # type: ignore
 
     db.session.commit()
     updated_user: User = User.query.filter_by(id=update_user_id).first()
@@ -82,14 +86,18 @@ def update_user(
 
 def delete_user(deleting_user: User, delete_user_id: int) -> User:
     if not deleting_user.is_admin() and deleting_user.id != delete_user_id:
-        raise AuthorizationException(f"User cannot delete user {delete_user_id}")
+        raise AuthorizationException(
+            f"User cannot delete user {delete_user_id}"
+        )
     deleted_user = get_user_by_id(delete_user_id)
     db.session.delete(deleted_user)
     db.session.commit()
     return deleted_user
 
 
-def add_role(name: str, user_emails: List[str] = [], user_ids: List[int] = []) -> Role:
+def add_role(
+    name: str, user_emails: List[str] = [], user_ids: List[int] = []
+) -> Role:
     if Role.query.filter_by(name=name).scalar():
         raise RoleExistsException(name)
     users = [get_user_by_email(email) for email in user_emails] + [
@@ -97,7 +105,7 @@ def add_role(name: str, user_emails: List[str] = [], user_ids: List[int] = []) -
     ]
     db.session.add(Role(name, users))
     db.session.commit()
-    added_role: Role =Role.query.filter_by(name=name).first()
+    added_role: Role = Role.query.filter_by(name=name).first()
     return added_role
 
 

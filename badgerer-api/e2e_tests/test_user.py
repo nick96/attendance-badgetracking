@@ -18,7 +18,8 @@ def test_users_get_users(base_url, user_token):
 
 def test_user_get_self(base_url, user_token, user_id):
     rv = requests.get(
-        f"{base_url}/user/{user_id}", headers={"Authorization": f"Bearer {user_token}"}
+        f"{base_url}/user/{user_id}",
+        headers={"Authorization": f"Bearer {user_token}"},
     )
     assert rv.status_code == 200
     assert "id" in rv.json() and rv.json()["id"] == user_id
@@ -32,7 +33,8 @@ def test_user_get_self(base_url, user_token, user_id):
 
 def test_admin_get_user(base_url, admin_token, user_id):
     rv = requests.get(
-        f"{base_url}/user/{user_id}", headers={"Authorization": f"Bearer {admin_token}"}
+        f"{base_url}/user/{user_id}",
+        headers={"Authorization": f"Bearer {admin_token}"},
     )
     assert rv.status_code == 200
     assert "id" in rv.json()
@@ -45,14 +47,16 @@ def test_admin_get_user(base_url, admin_token, user_id):
 
 def test_user_get_user(base_url, user2_token, user_id):
     rv = requests.get(
-        f"{base_url}/user/{user_id}", headers={"Authorization": f"Bearer {user2_token}"}
+        f"{base_url}/user/{user_id}",
+        headers={"Authorization": f"Bearer {user2_token}"},
     )
     assert rv.status_code == 401
 
 
 def test_admin_update_user(base_url, admin_token, user_id):
     rv = requests.get(
-        f"{base_url}/user/{user_id}", headers={"Authorization": f"Bearer {admin_token}"}
+        f"{base_url}/user/{user_id}",
+        headers={"Authorization": f"Bearer {admin_token}"},
     )
     assert rv.status_code == 200
     updated_user = {
@@ -71,7 +75,8 @@ def test_admin_update_user(base_url, admin_token, user_id):
     assert rv.json()["email"] == updated_user["email"]
 
     requests.get(
-        f"{base_url}/user/{user_id}", headers={"Authorization": f"Bearer {admin_token}"}
+        f"{base_url}/user/{user_id}",
+        headers={"Authorization": f"Bearer {admin_token}"},
     )
     assert rv.status_code == 200
     assert rv.json()["first_name"] == updated_user["first_name"]
@@ -81,7 +86,8 @@ def test_admin_update_user(base_url, admin_token, user_id):
 
 def test_user_update_self(base_url, user_token, user_id):
     rv = requests.get(
-        f"{base_url}/user/{user_id}", headers={"Authorization": f"Bearer {user_token}"}
+        f"{base_url}/user/{user_id}",
+        headers={"Authorization": f"Bearer {user_token}"},
     )
     assert rv.status_code == 200
     updated_user = {
@@ -100,7 +106,8 @@ def test_user_update_self(base_url, user_token, user_id):
     assert rv.json()["email"] == updated_user["email"]
 
     requests.get(
-        f"{base_url}/user/{user_id}", headers={"Authorization": f"Bearer {user_token}"}
+        f"{base_url}/user/{user_id}",
+        headers={"Authorization": f"Bearer {user_token}"},
     )
     assert rv.status_code == 200
     assert rv.json()["first_name"] == updated_user["first_name"]
@@ -110,7 +117,8 @@ def test_user_update_self(base_url, user_token, user_id):
 
 def test_user_update_user(base_url, user_token, user2_token, user_id):
     rv = requests.get(
-        f"{base_url}/user/{user_id}", headers={"Authorization": f"Bearer {user_token}"}
+        f"{base_url}/user/{user_id}",
+        headers={"Authorization": f"Bearer {user_token}"},
     )
     assert rv.status_code == 200
     updated_user = {
@@ -128,32 +136,38 @@ def test_user_update_user(base_url, user_token, user2_token, user_id):
 
 def test_admin_delete_user(base_url, admin_token, user_id):
     rv = requests.delete(
-        f"{base_url}/user/{user_id}", headers={"Authorization": f"Bearer {admin_token}"}
+        f"{base_url}/user/{user_id}",
+        headers={"Authorization": f"Bearer {admin_token}"},
     )
     assert rv.status_code == 200
     rv = requests.get(
-        f"{base_url}/user/{user_id}", headers={"Authorization": f"Bearer {admin_token}"}
+        f"{base_url}/user/{user_id}",
+        headers={"Authorization": f"Bearer {admin_token}"},
     )
     assert rv.status_code == 404
 
 
 def test_user_delete_self(base_url, user_token, user_id):
     rv = requests.delete(
-        f"{base_url}/user/{user_id}", headers={"Authorization": f"Bearer {user_token}"}
+        f"{base_url}/user/{user_id}",
+        headers={"Authorization": f"Bearer {user_token}"},
     )
     assert rv.status_code == 200
     rv = requests.get(
-        f"{base_url}/user/{user_id}", headers={"Authorization": f"Bearer {user_token}"}
+        f"{base_url}/user/{user_id}",
+        headers={"Authorization": f"Bearer {user_token}"},
     )
     assert rv.status_code == 404
 
 
 def test_user_delete_user(base_url, user2_token, user_token, user_id):
     rv = requests.delete(
-        f"{base_url}/user/{user_id}", headers={"Authorization": f"Bearer {user2_token}"}
+        f"{base_url}/user/{user_id}",
+        headers={"Authorization": f"Bearer {user2_token}"},
     )
     assert rv.status_code == 401
     rv = requests.get(
-        f"{base_url}/user/{user_id}", headers={"Authorization": f"Bearer {user_token}"}
+        f"{base_url}/user/{user_id}",
+        headers={"Authorization": f"Bearer {user_token}"},
     )
     assert rv.status_code == 200

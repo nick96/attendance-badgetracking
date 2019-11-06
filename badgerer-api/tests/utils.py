@@ -22,7 +22,9 @@ def register_user(
 
 
 def login_user(
-    client: Client, email: str = "example@example.com", password: str = "password"
+    client: Client,
+    email: str = "example@example.com",
+    password: str = "password",
 ) -> Response:
     resp = client.post(
         url_for("auth.login"), json={"email": email, "password": password}

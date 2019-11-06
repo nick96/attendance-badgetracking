@@ -24,7 +24,12 @@ class User(db.Model):
     roles = relationship("Role", secondary=_users_x_roles)
 
     def __init__(
-        self, first_name: str, last_name: str, email: str, password: str, roles=[]
+        self,
+        first_name: str,
+        last_name: str,
+        email: str,
+        password: str,
+        roles=[],
     ):
         super().__init__(
             first_name=first_name,

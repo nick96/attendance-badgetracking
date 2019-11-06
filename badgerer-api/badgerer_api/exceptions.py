@@ -65,7 +65,8 @@ def role_exists_exception_handler(app, error):
 
 def user_not_found_exception_handler(app, error):
     app.logger.warning(f"Could not find user: {str(error)}")
-    return {"message": "User not found", "error": str(error)}, error.status_code
+    expected_msg = {"message": "User not found", "error": str(error)}
+    return expected_msg, error.status_code
 
 
 def role_not_found_exception_handler(app, error):
