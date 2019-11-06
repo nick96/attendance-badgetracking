@@ -17,12 +17,12 @@ jobs:
         run: |
           docker build --target unit_testing -t unit_testing -f api/Dockerfile api/
           docker run -it unit_testing
-      - name: Integration tests
-        run: |
-          docker build --target integration_testing -t integration_testing -f api/Dockerfile api/
-          docker run -it integration_testing
+      # - name: Integration tests
+      #   run: |
+      #     docker build --target integration_testing -t integration_testing -f api/Dockerfile api/
+      #     docker run -it integration_testing
       - name: Build final image
-        run: docker build -t "docker.pkg.github.com/nick96/attendance-badgetracking/api:${GITHUB_SHA}"
+        run: docker build -t "docker.pkg.github.com/nick96/attendance-badgetracking/api:${GITHUB_SHA}" .
       - name: Push final image to registry
         run: |
           echo ${secrets.DOCKER_REGISTRY_PASS} | docker login --username ${secrets.DOCKER_REGISTRY_USER} --password-stdin

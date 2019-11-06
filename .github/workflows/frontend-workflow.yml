@@ -11,7 +11,7 @@ jobs:
     steps:
       - uses: actions/checkout@v1
       - name: Build image
-        run: docker build -t "docker.pkg.github.com/nick96/attendance-badgetracking/frontend:${GITHUB_SHA}"
+        run: docker build -t "docker.pkg.github.com/nick96/attendance-badgetracking/frontend:${GITHUB_SHA}" -f frontend/Dockerfile frontend/
       - name: Push final image to registry
         run: |
           echo ${secrets.DOCKER_REGISTRY_PASS} | docker login --username ${secrets.DOCKER_REGISTRY_USER} --password-stdin
