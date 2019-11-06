@@ -3,28 +3,27 @@ from typing import List, Iterator
 
 import jwt
 from flask import current_app
-from passlib.hash import argon2
-
-from .exceptions import (
+from passlib.hash import argon2 #type: ignore
+from badgerer_api.exceptions import (
     UserExistsException,
     RoleExistsException,
     RoleNotFoundException,
     AuthorizationException,
     UserNotFoundException,
 )
-from .extensions import db
-from .models import User, Role
+from badgerer_api.extensions import db
+from badgerer_api.models import User, Role
 
 
 def get_user_by_id(user_id: int) -> User:
-    user = User.query.filter_by(id=user_id).first()
+    user: User = User.query.filter_by(id=user_id).first()
     if not user:
         raise UserNotFoundException(user_id=user_id)
     return user
 
 
 def get_user_by_email(email: str) -> User:
-    user = User.query.filter_by(email=email).first()
+    user: User = User.query.filter_by(email=email).first()
     if not user:
         raise UserNotFoundException(email=email)
     return user
@@ -43,11 +42,13 @@ def add_user(
     password = argon2.hash(password)
     db.session.add(User(first_name, last_name, email, password, roles))
     db.session.commit()
-    return User.query.filter_by(email=email).first()
+    created_user: User = User.query.filter_by(email=email).first()
+    return created_user
 
 
 def get_all_users() -> Iterator[User]:
-    return User.query.all()
+    users: Iterator[User] = User.query.all()
+    return users
 
 
 def update_user(
@@ -72,10 +73,11 @@ def update_user(
     if password:
         user.password = argon2.hash(password)
     if role_names is not None:
-        user.roles = [get_role_by_name(role_name) for role_name in role_names]
+        user.roles = [get_role_by_name(role_name) for role_name in role_names] #type: ignore
 
     db.session.commit()
-    return User.query.filter_by(id=update_user_id).first()
+    updated_user: User = User.query.filter_by(id=update_user_id).first()
+    return updated_user
 
 
 def delete_user(deleting_user: User, delete_user_id: int) -> User:
@@ -95,11 +97,12 @@ def add_role(name: str, user_emails: List[str] = [], user_ids: List[int] = []) -
     ]
     db.session.add(Role(name, users))
     db.session.commit()
-    return Role.query.filter_by(name=name).first()
+    added_role: Role =Role.query.filter_by(name=name).first()
+    return added_role
 
 
 def get_role_by_name(name: str) -> Role:
-    role = Role.query.filter_by(name=name).first()
+    role: Role = Role.query.filter_by(name=name).first()
     if not role:
         raise RoleNotFoundException(name=name)
     return role
