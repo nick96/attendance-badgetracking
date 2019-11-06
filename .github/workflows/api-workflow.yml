@@ -2,7 +2,7 @@ name: Test, build and deploy API
 on:
   push:
     paths:
-      - "api/**"
+      - "badgerer-api/**"
 jobs:
   build:
     name: QC, testing and building
