@@ -1,15 +1,15 @@
 from flask import Blueprint
 from flask import request, g, current_app
-from passlib.hash import argon2
+from passlib.hash import argon2 #type: ignore
 
-from . import service
-from .decorators import requires_authn, requires_authz
-from .exceptions import (
+from badgerer_api import service
+from badgerer_api.decorators import requires_authn, requires_authz
+from badgerer_api.exceptions import (
     AuthorizationException,
     AuthenticationException,
     UserNotFoundException,
 )
-from .schemas import UserRequestSchema, UserResponseSchema, LoginRequestSchema
+from badgerer_api.schemas import UserRequestSchema, UserResponseSchema, LoginRequestSchema
 
 user_blueprint = Blueprint("user", __name__)
 auth_blueprint = Blueprint("auth", __name__)
