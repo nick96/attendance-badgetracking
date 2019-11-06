@@ -1,13 +1,13 @@
-import { ErrorMessage, Field, Form, Formik } from "formik";
+import { Field, Form, Formik } from "formik";
 import React, { useContext, useEffect } from "react";
 import { Link, Redirect } from "react-router-dom";
 import { TextField } from "formik-material-ui";
 
 import Button from "@material-ui/core/Button";
 import type { Credentials } from "./Client";
+import { ClientContext } from "./Client";
 import * as Yup from "yup";
 import { SessionContext } from "./session";
-import { ClientContext } from "./Client";
 
 const LoginFormSchema = Yup.object().shape({
   email: Yup.string()
