@@ -7,6 +7,8 @@ COPY ./pyproject.toml ./pyproject.toml
 COPY ./poetry.lock ./poetry.lock
 RUN poetry install
 
+COPY ./mypy.ini ./mypy.ini
+
 COPY ./e2e_tests/*.py ./e2e_tests/
 COPY ./tests/*.py ./tests/
 COPY ./badgerer_api/*.py ./badgerer_api/
