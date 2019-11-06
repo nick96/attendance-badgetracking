@@ -12,12 +12,12 @@ jobs:
       - name: Lint
         run: |
           docker build --target linter -t linter .
-          docker run -it linter
+          docker run linter
         working-directory: ./badgerer-api
       - name: Unit test
         run: |
           docker build --target unit_testing -t unit_testing .
-          docker run -it unit_testing
+          docker run unit_testing
         working-directory: ./badgerer-api
       # - name: Integration tests
       #   run: |
