@@ -7,7 +7,7 @@ services:
       - .env
     environment:
       FLASK_APP: app.py
-      DB_URI: "postgresql://${DB_USER}:${DB_PASS}@postgres:5432/${DB_NAME}"
+      DB_URI: "postgresql://${DB_USER}:${DB_PASS:-THMoWjNBWWIdUnQvKtJusKgIzFhsNZ}@postgres:5432/${DB_NAME}"
     ports:
       - 5000:5000
     networks:

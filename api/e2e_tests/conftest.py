@@ -10,7 +10,7 @@ def get_token(base_url: str, user: str, password: str) -> str:
         json={"email": user, "password": password},
         headers={"User-Agent": "Pytest setup/teardown"},
     )
-    assert rv.status_code == 200
+    assert rv.status_code == 200, rv.content.decode("utf8")
     assert "token" in rv.json()
     return rv.json()["token"]
 
