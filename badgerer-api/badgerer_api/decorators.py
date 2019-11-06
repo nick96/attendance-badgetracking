@@ -49,8 +49,10 @@ def check_authz(request: Request, roles: List[str]):
 def requires_authn():
     """Decorator to assert a user is authenticated.
 
-    This decorator ensure that the bearer token in the `Authorization` header exists and it valid. Then it adds the
-     user's email to the `user_email` field to the request context (`g`) so it is accessible during the request.
+    This decorator ensure that the bearer token in the `Authorization` header
+    exists and it valid. Then it adds the user's email to the `user_email`
+    field to the request context (`g`) so it is accessible during the request.
+
     """
 
     def wrapper(fn):
@@ -67,7 +69,9 @@ def requires_authn():
 def requires_authz(roles: List[str]):
     """Decorator to assert the user has the required authentication (via roles).
 
-    Using this decorator implies authentication (`requires_auth` is called inside).
+    Using this decorator implies authentication (`requires_auth` is called
+    inside).
+
     """
 
     def wrapper(fn):

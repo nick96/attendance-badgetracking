@@ -28,11 +28,14 @@ from .service import add_user, add_role
 def create_app(config_obj=config()):
     """Create the Flask app with the specified configuration.
 
-    This function initialises the flask app, associated database connection, migration functionality, blueprints
-    (routes), error handlers and ensures the database contains the expected initialisation data.
+    This function initialises the flask app, associated database connection,
+    migration functionality, blueprints (routes), error handlers and ensures
+    the database contains the expected initialisation data.
 
-    :param config_obj `Config` object to configure the app with. By default it is what is returned by `config()`.
+    :param config_obj `Config` object to configure the app with. By default it
+    is what is returned by `config()`.
     :return Configured flask application
+
     """
     app = Flask(__name__)
     app.response_class.default_mimetype = "application/json"

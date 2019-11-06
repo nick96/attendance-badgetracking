@@ -2,7 +2,7 @@ from marshmallow import Schema, fields
 
 
 class UserRequestSchema(Schema):
-    """Schema for a create user request which we use marshmallow to validate."""
+    """Schema for a create user request."""
 
     first_name = fields.Str(data_key="firstName")
     last_name = fields.Str(data_key="lastName")

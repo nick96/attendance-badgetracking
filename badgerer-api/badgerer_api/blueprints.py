@@ -8,7 +8,11 @@ from badgerer_api.exceptions import (
     AuthenticationException,
     UserNotFoundException,
 )
-from badgerer_api.schemas import UserRequestSchema, UserResponseSchema, LoginRequestSchema
+from badgerer_api.schemas import (
+    UserRequestSchema,
+    UserResponseSchema,
+    LoginRequestSchema,
+)
 
 user_blueprint = Blueprint("user", __name__)
 auth_blueprint = Blueprint("auth", __name__)
@@ -26,7 +30,8 @@ def get_users():
 def get_user_by_id(user_id: int):
     if g.user.id != user_id and not g.user.is_admin():
         current_app.logger.warning(
-            f"User {g.user.id} tried to access {user_id} but was denied due to not having admin privileges"
+            f"User {g.user.id} tried to access {user_id} but was denied"
+            + " due to not having admin privileges"
         )
         raise AuthorizationException(
             f"User {g.user.email} does not have sufficient authorisation"
@@ -44,7 +49,8 @@ def create_user():
 
     if not create_user:
         current_app.logger.error(
-            f"User with email {req['email']} was not found, even though they were just created"
+            f"User with email {req['email']} was not found, even though they"
+            + " were just created"
         )
         return 500
     current_app.logger.info(f"Created user {created_user}")
@@ -65,7 +71,9 @@ def update_user(user_id: int):
 @user_blueprint.route("/user/<int:user_id>", methods=["DELETE"])
 @requires_authn()
 def delete_user(user_id: int):
-    deleted_user = service.delete_user(deleting_user=g.user, delete_user_id=user_id)
+    deleted_user = service.delete_user(
+        deleting_user=g.user, delete_user_id=user_id
+    )
     current_app.logger.info(f"Deleted user {deleted_user}")
     return UserResponseSchema().dump(deleted_user)
 
@@ -80,7 +88,9 @@ def login():
         err.status_code = 403
         raise err
     if not user:
-        current_app.logger.info(f"Could not find user with email {req['email']}")
+        current_app.logger.info(
+            f"Could not find user with email {req['email']}"
+        )
         raise AuthenticationException("Email or password incorrect")
 
     if not argon2.verify(req["password"], user.password):
