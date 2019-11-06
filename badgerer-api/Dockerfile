@@ -13,7 +13,7 @@ COPY ./e2e_tests/*.py ./e2e_tests/
 COPY ./tests/*.py ./tests/
 COPY ./badgerer_api/*.py ./badgerer_api/
 
-CMD ["bash", "-c", "poetry run mypy ./badgerer_api && flake8"]
+CMD ["bash", "-c", "poetry run mypy ./badgerer_api && poetry run flake8"]
 
 FROM python:3.7.4 as unit_testing
 
