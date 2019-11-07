@@ -25,6 +25,7 @@ jobs:
       #     docker run -it integration_testing
       - name: Build final image
         run: docker build -t "docker.pkg.github.com/nick96/attendance-badgetracking/api:${GITHUB_SHA}" .
+        working-directory: ./badgerer-api
       - name: Push final image to registry
         run: |
           echo ${secrets.DOCKER_REGISTRY_PASS} | docker login --username ${secrets.DOCKER_REGISTRY_USER} --password-stdin
