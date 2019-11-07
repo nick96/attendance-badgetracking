@@ -30,3 +30,5 @@ repos:
     rev: 4.0.1
     hooks:
       - id: pydocstyle
+        args:
+          - badgerer-api/badgerer_api
