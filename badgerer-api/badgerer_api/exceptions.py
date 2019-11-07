@@ -23,7 +23,9 @@ class RoleExistsException(Exception):
 class RoleNotFoundException(Exception):
     """Exception thrown when the role is not found."""
 
-    def __init__(self, name: Optional[str] = None, role_id: Optional[int] = None):
+    def __init__(
+        self, name: Optional[str] = None, role_id: Optional[int] = None
+    ):
         """Create a new exception for the unfound role.
 
         Roles can be retrieved by their ID or name, this constructor accounts
@@ -57,7 +59,12 @@ class AuthorizationException(Exception):
 class UserNotFoundException(Exception):
     """Exception thrown then the user is not found."""
 
-    def __init__(self, email: Optional[str] = None, user_id: Optional[int] = None, status_code=404):
+    def __init__(
+        self,
+        email: Optional[str] = None,
+        user_id: Optional[int] = None,
+        status_code=404,
+    ):
         """Create a user not found exception.
 
         This exceptions can be raised in two contexts. When we're trying to
@@ -81,43 +88,43 @@ class UserNotFoundException(Exception):
 
 
 def validation_error_handler(app, error):
-    """Handler for validation errors."""
+    """Handle validation errors."""
     app.logger.warning(f"Invalid request body: {request.get_data()}")
     return {"message": "Validation error", "errors": error.messages}, 400
 
 
 def authn_exception_handler(app, error):
-    """Handler for authentication exceptions."""
+    """Handle authentication exceptions."""
     app.logger.warning(f"Authentication exception: {str(error)}")
     return {"message": "Authentication error", "error": str(error)}, 403
 
 
 def authz_exception_handler(app, error):
-    """Handler for authorization exceptions."""
+    """Handle authorization exceptions."""
     app.logger.warning(f"Authorization exception: {str(error)}")
     return {"message": "Authorization error", "error": str(error)}, 401
 
 
 def user_exists_exception_handler(app, error):
-    """Handler for exceptions thrown when the user already exists."""
+    """Handle exceptions thrown when the user already exists."""
     app.logger.warning(f"User already exists: {str(error)}")
     return {"message": "User already exists", "error": str(error)}, 400
 
 
 def role_exists_exception_handler(app, error):
-    """Handler for exceptions thrown when the role already exists."""
+    """Handle exceptions thrown when the role already exists."""
     app.logger.warning(f"User already exists: {str(error)}")
     return {"message": "Role already exists", "error": str(error)}, 400
 
 
 def user_not_found_exception_handler(app, error):
-    """Handler for exceptions thrown when the user is not found."""
+    """Handle exceptions thrown when the user is not found."""
     app.logger.warning(f"Could not find user: {str(error)}")
     expected_msg = {"message": "User not found", "error": str(error)}
     return expected_msg, error.status_code
 
 
 def role_not_found_exception_handler(app, error):
-    """Handler for exceptions thrown when the roles is not found."""
+    """Handle exceptions thrown when the roles is not found."""
     app.logger.warning(f"Could not find role: {str(error)}")
     return {"message": "Role not found", "error": str(error)}, 404
