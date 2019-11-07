@@ -94,8 +94,8 @@ def update_user(
         user.password = argon2.hash(password)
     if role_names is not None:
         user.roles = [
-            get_role_by_name(role_name) for role_name in role_names
-        ]  # type: ignore
+            get_role_by_name(role_name) for role_name in role_names  # type: ignore
+        ]
 
     db.session.commit()
     updated_user: User = User.query.filter_by(id=update_user_id).first()
