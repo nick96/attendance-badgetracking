@@ -29,6 +29,7 @@ black = "19.10b0"
 sqlalchemy-stubs = "0.2"
 flake8 = "^3.7"
 pre-commit = "^1.20"
+pydocstyle = "^4.0"
 
 [tool.black]
 line-length = 79
