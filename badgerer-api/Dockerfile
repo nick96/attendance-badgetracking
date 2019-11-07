@@ -35,7 +35,9 @@ FROM python:3.7.4 as integration_testing
 
 WORKDIR /badgerer-api
 
-RUN apt-get update && apt-get install -y postgresql
+RUN apt-get update && \
+    apt-get install --no-install-recommends -y postgresql && \
+    rm -rf /var/lib/apt/lists/*
 RUN python3 -m pip install poetry
 COPY --from=unit_testing /badgerer-api/pyproject.toml ./pyproject.toml
 COPY --from=unit_testing /badgerer-api/poetry.lock ./poetry.lock
@@ -69,7 +71,9 @@ FROM python:3.7.4
 
 WORKDIR /dist
 
-RUN apt-get update && apt-get install -y postgresql
+RUN apt-get update && \
+    apt-get install --no-install-recommends -y postgresql && \
+    rm -rf /var/lib/apt/lists/*
 COPY --from=builder /badgerer-api/dist/*.whl ./
 RUN python3 -m pip install *.whl
 
