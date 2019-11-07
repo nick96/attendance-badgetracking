@@ -8,6 +8,7 @@ COPY ./poetry.lock ./poetry.lock
 RUN poetry install
 
 COPY ./mypy.ini ./mypy.ini
+COPY ./.flake8 ./.flake8
 
 COPY ./e2e_tests/*.py ./e2e_tests/
 COPY ./tests/*.py ./tests/
