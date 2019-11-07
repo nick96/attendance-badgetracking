@@ -1,3 +1,5 @@
+"""Blueprints for the different routes."""
+
 from flask import Blueprint
 from flask import request, g, current_app
 from passlib.hash import argon2  # type: ignore
@@ -28,6 +30,7 @@ def get_users():
 @user_blueprint.route("/user/<int:user_id>")
 @requires_authn()
 def get_user_by_id(user_id: int):
+    """Get a specific user by their ID."""
     if g.user.id != user_id and not g.user.is_admin():
         current_app.logger.warning(
             f"User {g.user.id} tried to access {user_id} but was denied"
@@ -60,6 +63,7 @@ def create_user():
 @user_blueprint.route("/user/<int:user_id>", methods=["PUT"])
 @requires_authn()
 def update_user(user_id: int):
+    """Update a user by their ID."""
     req = UserRequestSchema().load(request.get_json())
     updated_user = service.update_user(
         updating_user=g.user, update_user_id=user_id, **req
@@ -71,6 +75,7 @@ def update_user(user_id: int):
 @user_blueprint.route("/user/<int:user_id>", methods=["DELETE"])
 @requires_authn()
 def delete_user(user_id: int):
+    """Delete a user by their ID."""
     deleted_user = service.delete_user(
         deleting_user=g.user, delete_user_id=user_id
     )

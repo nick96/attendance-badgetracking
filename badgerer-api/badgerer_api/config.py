@@ -1,3 +1,5 @@
+"""Application configuration."""
+
 import os
 from datetime import timedelta
 
@@ -25,12 +27,16 @@ class Config:
 
 
 class ProdConfig(Config):
+    """Config for production."""
+
     ENV = "prod"
     DEBUG = False
     SQLALCHEMY_DATABASE_URI = os.environ.get("DB_URI")
 
 
 class DevConfig(Config):
+    """Config for development."""
+
     ENV = "dev"
     DEBUG = True
     DB_NAME = "dev.db"
@@ -48,6 +54,7 @@ class TestConfig(Config):
 
 
 def config() -> Config:
+    """Get the correct config based on the environment variables."""
     if os.environ.get("CI"):
         return TestConfig()
     elif os.environ.get("FLASK_ENV") == "development":

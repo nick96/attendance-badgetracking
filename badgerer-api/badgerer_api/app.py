@@ -1,3 +1,9 @@
+"""Application entry point.
+
+Contains the app factory.
+
+"""
+
 from functools import partial
 
 from flask import Flask
@@ -81,8 +87,12 @@ def create_app(config_obj=config()):
     return app
 
 
-def initial_data(app):
-    """Ensure the initial data is in the database."""
+def initial_data(app):  # noqa: D202
+    """Ensure the initial data is in the database.
+
+    :param app: App with the context in which to initialise the data
+
+    """
 
     def init():
         app.logger.info("Ensuring admin role exists")

@@ -1,3 +1,5 @@
+"""Decorators used throughout the application."""
+
 from functools import wraps
 from typing import List
 
@@ -9,6 +11,15 @@ from .service import get_user_by_email, validate_jwt
 
 
 def check_authn(request: Request):
+    """Authenticate the user based on the given request.
+
+    The `Authorization` header should contain a bearer token which is checked
+    for validity. The user is then set based on the email contained in the
+    payload.
+
+    :param request: Request to get the token from
+
+    """
     authn = request.headers.get("Authorization")
     if not authn:
         raise AuthenticationException(
@@ -32,6 +43,15 @@ def check_authn(request: Request):
 
 
 def check_authz(request: Request, roles: List[str]):
+    """Check the user is authorized.
+
+    First checks that the user can be correctly authenticated using the given
+    request. Then checks they have the required roles.
+
+    :param request: Request to get the token from to authenticate the user
+    :param roles: Roles to check the user has the correct authorization
+
+    """
     check_authn(request)
     user = get_user_by_email(g.user.email)
     if not user:
@@ -46,8 +66,8 @@ def check_authz(request: Request, roles: List[str]):
             )
 
 
-def requires_authn():
-    """Decorator to assert a user is authenticated.
+def requires_authn():  # noqa: D202
+    """Assert a user is authenticated.
 
     This decorator ensure that the bearer token in the `Authorization` header
     exists and it valid. Then it adds the user's email to the `user_email`
@@ -66,8 +86,8 @@ def requires_authn():
     return wrapper
 
 
-def requires_authz(roles: List[str]):
-    """Decorator to assert the user has the required authentication (via roles).
+def requires_authz(roles: List[str]):  # noqa: D202
+    """Assert the user has the required authentication (via roles).
 
     Using this decorator implies authentication (`requires_auth` is called
     inside).

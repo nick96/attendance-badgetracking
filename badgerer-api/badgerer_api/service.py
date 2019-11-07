@@ -1,3 +1,10 @@
+"""Service layer.
+
+This provides a way for the controllers to interact with the persistence layer
+in an abstracted manner.
+
+"""
+
 import datetime
 from typing import Iterator, List
 
@@ -16,6 +23,10 @@ from passlib.hash import argon2  # type: ignore
 
 
 def get_user_by_id(user_id: int) -> User:
+    """Get a user by their ID.
+
+    :para user_id: ID of the user to get
+    """
     user: User = User.query.filter_by(id=user_id).first()
     if not user:
         raise UserNotFoundException(user_id=user_id)
@@ -23,6 +34,10 @@ def get_user_by_id(user_id: int) -> User:
 
 
 def get_user_by_email(email: str) -> User:
+    """Get a user by their email.
+
+    :param email: Email to retrieve the user by
+    """
     user: User = User.query.filter_by(email=email).first()
     if not user:
         raise UserNotFoundException(email=email)
@@ -36,6 +51,7 @@ def add_user(
     password: str,
     role_names: List[str] = [],
 ) -> User:
+    """Create a new user."""
     if User.query.filter_by(email=email).scalar():
         raise UserExistsException(email=email)
     roles = [get_role_by_name(role_name) for role_name in role_names]
@@ -47,6 +63,7 @@ def add_user(
 
 
 def get_all_users() -> Iterator[User]:
+    """Get all the users in the database."""
     users: Iterator[User] = User.query.all()
     return users
 
@@ -60,6 +77,7 @@ def update_user(
     password: str = None,
     role_names: List[str] = None,
 ) -> User:
+    """Update a user."""
     if not updating_user.is_admin() and updating_user.id != update_user_id:
         raise AuthorizationException(
             f"User cannot update user {update_user_id}"
@@ -85,6 +103,7 @@ def update_user(
 
 
 def delete_user(deleting_user: User, delete_user_id: int) -> User:
+    """Delete a user."""
     if not deleting_user.is_admin() and deleting_user.id != delete_user_id:
         raise AuthorizationException(
             f"User cannot delete user {delete_user_id}"
@@ -98,6 +117,7 @@ def delete_user(deleting_user: User, delete_user_id: int) -> User:
 def add_role(
     name: str, user_emails: List[str] = [], user_ids: List[int] = []
 ) -> Role:
+    """Add a role to user."""
     if Role.query.filter_by(name=name).scalar():
         raise RoleExistsException(name)
     users = [get_user_by_email(email) for email in user_emails] + [
@@ -110,6 +130,7 @@ def add_role(
 
 
 def get_role_by_name(name: str) -> Role:
+    """Retrieve a role by its name."""
     role: Role = Role.query.filter_by(name=name).first()
     if not role:
         raise RoleNotFoundException(name=name)
@@ -117,6 +138,7 @@ def get_role_by_name(name: str) -> Role:
 
 
 def new_jwt(user: User, app=current_app) -> str:
+    """Create and return a new JWT."""
     return jwt.encode(
         {
             "exp": datetime.datetime.utcnow()
@@ -130,6 +152,7 @@ def new_jwt(user: User, app=current_app) -> str:
 
 
 def validate_jwt(token: str, app=current_app) -> dict:
+    """Validate a JWT."""
     return jwt.decode(
         token, app.config["JWT_SECRET"], algorithms=app.config["JWT_ALGOS"]
     )
