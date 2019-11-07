@@ -31,4 +31,4 @@ repos:
     hooks:
       - id: pydocstyle
         args:
-          - badgerer-api/badgerer_api
+          - "--match-dir=badgerer_api"
