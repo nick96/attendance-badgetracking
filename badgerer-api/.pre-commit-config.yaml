@@ -26,3 +26,7 @@ repos:
     rev: v0.1.0
     hooks:
       - id: dockerfilelint
+  - repo: https://github.com/PyCQA/pydocstyle
+    rev: 4.0.1
+    hooks:
+      - id: pydocstyle
