@@ -28,6 +28,6 @@ jobs:
         working-directory: ./badgerer-api
       - name: Push final image to registry
         run: |
-          echo ${secrets.DOCKER_REGISTRY_PASS} | docker login --username ${secrets.DOCKER_REGISTRY_USER} --password-stdin
+          echo ${{secrets.DOCKER_REGISTRY_PASS}} | docker login --username ${{secrets.DOCKER_REGISTRY_USER}} --password-stdin
           docker push docker.pkg.github.com/nick96/attendance-badgetracking/api:${GITHUB_SHA}
           docker push docker.pkg.github.com/nick96/attendance-badgetracking/api:latest
