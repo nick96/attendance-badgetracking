@@ -7,7 +7,7 @@ authors = ["Nick Spain <nicholas.spain96@gmail.com>"]
 [tool.poetry.dependencies]
 python = "3.7.4"
 argon2-cffi = "19.1.0"
-Flask = "1.1.1"
+Flask = "2.2.5"
 Flask-Cors = "3.0.8"
 Flask-Migrate = "2.5.2"
 Flask-SQLAlchemy = "2.4.1"
